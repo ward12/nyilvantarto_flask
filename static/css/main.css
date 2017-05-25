@@ -1,0 +1,17 @@
+.menu-item {
+	margin: 10px 5px 10px 5px;
+}
+
+.row-centered {
+	text-align: center;
+}
+
+.col-centered {
+	float: none;
+}
+.menu-row{
+	margin-top: 20px;
+}
+.content{
+	background-color: #f4f6f9;
+}
