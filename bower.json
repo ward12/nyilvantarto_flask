@@ -1,6 +1,9 @@
-{
+{ 
+ "//":"ezt a file-t a bower inittel generáltuk",
+  "//":" taratalmazza a frontend függőségeket",
+"//": "telepiteni a bower install paranccsal lehet",
   "name": "nyilvantarto",
-  "description": "",
+  i"description": "",
   "main": "",
   "license": "MIT",
   "homepage": "",
