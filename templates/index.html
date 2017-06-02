@@ -8,6 +8,8 @@
 <script type="text/javascript" src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.min.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+<script type="text/javascript" src="{{ url_for('static', filename='js/app.js') }}"></script>
+
 
 <body>
 <nav class="navbar container">
@@ -58,20 +60,7 @@ Logout...
 </div>
 
 
-<script>
-	function switchMenu(clickedId){
-		console.log(clickedId+" megnyomva...");
-		// jquery selector: minden html elemet kiválaszt amin rajta van a content class
-		$(".content").css('display', 'none');
-		$("#"+clickedId+".content").css('display', 'unset');
 
-		$(".menu-item").removeClass("btn-primary");
-
-		$("#"+clickedId+".menu-item").removeClass("btn-secondary");
-		$("#"+clickedId+".menu-item").addClass("btn-primary");
-	};	
-
-</script>
 
 
 </body>
