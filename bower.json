@@ -1,7 +1,5 @@
-{ 
- "//":"ezt a file-t a bower inittel generáltuk",
-  "//":" taratalmazza a frontend függőségeket",
-"//": "telepiteni a bower install paranccsal lehet",
+{
+  "//": "telepiteni a bower install paranccsal lehet",
   "name": "nyilvantarto",
   "description": "",
   "main": "",
@@ -16,6 +14,7 @@
     "tests"
   ],
   "dependencies": {
-    "bootstrap": "^3.3.7"
+    "bootstrap": "^3.3.7",
+    "bootstrap-datepicker": "^1.6.4"
   }
 }
