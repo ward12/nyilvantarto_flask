@@ -43,10 +43,10 @@ function addMunkanap() {
             <input id="`+(lastid+1)+`" type="text" placeholder="dátum" class="datepicker datum_mezo form-control" value="`+mainap+`">
           </div>
           <div class="col-xs-6 col-sm-2">
-            <input id="`+(lastid+1)+`" type="number" min="0.5" max="12" step="0.5" class="munkaora form-control" placeholder="munkaóra">
+            <input id="`+(lastid+1)+`" type="number" min="0.5" max="8" step="0.5" class="munkaora form-control" placeholder="munkaóra">
           </div>
           <div class="col-xs-12 col-sm-6">
-            <textarea id="`+(lastid+1)+`" rows="3" class="form-control" placeholder="megjegyzés"></textarea>
+            <textarea id="`+(lastid+1)+`" rows="3" class="form-control comment" placeholder="megjegyzés"></textarea>
           </div>
         </div>
 
@@ -62,12 +62,82 @@ function addMunkanap() {
 	});		
 
 } // addMunkanap vége
+//globális változó, használata csak indokolt esetbe ajánlott
+
 let new_munkanaps = [];
+let collectHours = {};
 // [{id:1, datePiced:"2017.04.03",workedHour:5,comment:"mycomment",okToSend:true},{},{}...]
 function collectMunkanaps(){
 	//TODO összegyűtjteni a munkanapokat egy objectetket tartalmazó tömbbe
-	console.log("munkanapok összegyűjtése....");
+	new_munkanaps = [];
+	// az azonos napra beírt munkaórák száma nem haladhatja meg a 8 órát
+	// collentHour = {"2017.06.09": 4, "2017.07.12": 8 }
+	collectHour = {};
+	$('.new_munkanap').each(function(){
+		let munkanapId = $(this).attr('id');
+		let datePicked = $(this).find('.datepicker').val();
+		let workedHour = $(this).find('.munkaora').val();
+		workedHour = parseFloat(workedHour.replace(',','.').replace(' ',''));
+		let comment_text = $(this).find('.comment').val();
+		let okToSend = false;
+		// if ( collectHours[datePicked] ) { //ha létezik az adott dátummal property az objectben
+		// 	collectHours[datePicked] = collectHours[datePicked]; // akkor az értéke ön maga lesz, tehét nem bántjuk
 
+		// } else { //különben
+		// 	collectHours[datePicked] = 0; //létrehozzuk ezt a property-t és nullára állítjuk az értékét
+		// }
+		// a || operátor ("vagy" jel) a bal oldalt fogja preferálni, ha az igaz. vagy ha az hamis akkor a jobb oldalt fogja preferálni
+		collectHours[datePicked] = collectHours[datePicked] || 0;
+		// collectHours[datePicked] = collectHours[datePicked] + workedHour; // minden esetben hozzáadjuk a property értékéhez
+		// // a ledolgozott órát
+		collectHours[datePicked] += workedHour;
+
+		removeAlert(munkanapId);
+
+		if ( collectHours[datePicked] >=0 && collectHours[datePicked] <=8 ) {
+			okToSend = true;
+		} else {
+			okToSend = false;
+			putAlert(munkanapId, "Ez a nap már elérte a max munkaórát(8 óra)");
+			}
+			if (workedHour === 0) {
+				okToSend = false;
+				removeAlert(munkanapId);
+				putAlert(munkanapId, "A munkaóra nem lehet nulla");
+		}
+
+		new_munkanaps.push({
+			"id": munkanapId,
+			"datePicked": datePicked,
+			"workedHour": workedHour,
+			"comment": comment_text,
+			"okToSend": okToSend
+		});
+	});//each
+	console.log("A munkanapok: "+JSON.stringify(new_munkanaps));
+	console.log(collectHours);
+}
+function removeAlert(munkanapId){
+	$('#'+munkanapId+'.new_munkanap > .alert').remove();
+}
+
+
+function putAlert(munkanapId, alertText){
+	let existingAlert = $('#'+munkanapId+'new_munkanap').find('alerttext').text(); // tul biztosítás?
+	if (  $('#'+munkanapId+'.new_munkanap > .alert').length === 0 || existingAlert !== alertText) {
+		$('#'+munkanapId+'.new_munkanap').prepend(`
+	<div class="alert alert-warning alert-dismissable">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		<div class="alerttext">
+		`+alertText+`
+		</div>
+	</div>	
+
+		`);
+
+} else {
+	//megvillogtatjuk a meglévő hibaüzenetet
+}
 }
 
 function removeMunkanap(munkanapToRemove){
@@ -82,18 +152,19 @@ function sendForm(){
 
 $(document).on('blur', '.munkaora' , function() {
 	//amit ide irunk kod, az akkor fut le ha a munkaora mező elhagyja a usert
-	munkaoraMezo = parseInt($(this).val());
+	//workedHour = parseFloat(workedHour.replace(',','.').replace(' ',''));
 	//console.log("A munkaora mezo erteke: "+munkaoraMezo);
 	//console.log("A munkaora mezo tipusa: "+typeof(munkaoraMezo));
+	munkaoraMezo = parseFloat($(this).val());
 	if ( Number.isFinite(munkaoraMezo) ){
 		if ( munkaoraMezo > 8 ) {
 			$(this).val('8');
 		} else if(munkaoraMezo < 0){
-		$(this).val('0');
-	}
-	} else {
-		$(this).val('0');
-	}
+			$(this).val('0');
+		}
+		}else{
+			$(this).val('0');
+		}
 
 });
 
